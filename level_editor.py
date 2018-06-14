@@ -2,56 +2,60 @@ import pygame, pickle, os
 import tkinter as tk
 from lib.colour import *
 from lib.addons import pointcheck
-#print(help(collide))
-def drop_menu(screen, rect, text, font, mouse, command, click, colour1=(0,0,0), colour2=(178, 43, 209)):
-    
-    if click:
-        command()
-    if not pointcheck(rect,mouse):
-        # defalt look
-        text_colour = colour2
-        
-    else:
-        # scrole over
-        pygame.draw.rect(screen, colour2, rect)
-        text_colour = colour1
-        if mouse[2] == 1:
-            #if click == True: click = False
-            #else: click = True
-            print(click)
-            
-            click = True
-            mouse[2] = 0
-            
-    text = font.render(text, True, text_colour)
-    
-    screen.blit(text, (rect[0], rect[1]+5))
+import lib
+print(lib.__path__)
 
-
+class button:
+    def __init__(self):
+        self.click = False
+    def drop_menu(self,screen, rect, text, font, mouse, command, colour1=(0,0,0), colour2=(178, 43, 209)):
         
+        if not pointcheck(rect,mouse):
+            
+            text_colour = colour2
+            
+        else:
+            pygame.draw.rect(screen, colour2, rect)
+            text_colour = colour1
+            if mouse[2] == 1:
+                mouse[2] == 0
+                if self.click == True:
+                    self.click = False
+                else:
+                    self.click = True
         
-def button(screen, rect, text, font, mouse, command, colour1=(0,0,0), colour2=(178, 43, 209)):
-    
-    
-    if not pointcheck(rect,mouse):
-        
-        text_colour = colour2
-        
-    else:
-        pygame.draw.rect(screen, colour2, rect)
-        text_colour = colour1
-        if mouse[2] == 1:
+        if self.click == True:
             command()
-    text = font.render(text, True, text_colour)
-    
-    screen.blit(text, (rect[0], rect[1]+5))
+            
+        text = font.render(text, True, text_colour)
+        
+        screen.blit(text, (rect[0], rect[1]+5))
+
+
+            
+            
+    def button(self,screen, rect, text, font, mouse, command, colour1=(0,0,0), colour2=(178, 43, 209)):
+        
+        
+        if not pointcheck(rect,mouse):
+            
+            text_colour = colour2
+            
+        else:
+            pygame.draw.rect(screen, colour2, rect)
+            text_colour = colour1
+            if mouse[2] == 1:
+                command()
+        text = font.render(text, True, text_colour)
+        
+        screen.blit(text, (rect[0], rect[1]+5))
 
 
         
 
 class pallet:
     def __init__(self):
-        self.pallet = []
+        self.pallet = [None,[(100,50,197),False],[(10,0,197),False]]
         
     def load(self, file):
         pass
@@ -65,11 +69,12 @@ class pallet:
     def remove(self, index):
         self.pallet.pop(index)
 
+
     def print(self):
         for index, item in enumerate(self.pallet):
             print(index, item)
 
-    
+   
 class grid:
     #creates a resizable grid that extends past the sides of the window in order to place tiles
     def __init__(self, serface, x, y):
@@ -154,7 +159,7 @@ or input a grid location and it outputs a rect square"
             
         
     def update(self):
-        if True:
+        if self.on:
             location = self._selector()
             if location is not None:
                 self.edit(location)
@@ -292,7 +297,18 @@ font = pygame.font.SysFont("Courier New", 35)
 pallet = pallet()
 grid = grid(screen, 0, top_bar.height)
 
-file_clicked = False
+clicky = button()
+mouse_oneclick = False
+
+def file_buttons():
+    grid.on = False
+    pygame.draw.rect(screen,black,[0,0,150,300])
+    clicky.button(screen, [0,50,150,50], 'New', font, mouse, lambda: grid.level_new())
+    clicky.button(screen, [0,100,150,50], 'Load', font, mouse, lambda: grid.level_load())
+    clicky.button(screen, [0,150,150,50], 'Save', font, mouse, lambda: grid.level_save())
+    clicky.button(screen, [0,200,150,50], 'SaveAs', font, mouse, lambda: grid.level_save_as())
+    clicky.button(screen, [0,250,150,50], 'project', font, mouse, lambda: grid.level_projectselect())
+
 
 def key():
     speed = 5
@@ -336,15 +352,9 @@ def update():
     screen.fill(white)
     grid.update()
     pygame.draw.rect(screen, black, [0, 0, width, top_bar.height])
-
-    button(screen, [0,0,150,top_bar.height], 'Save', font, mouse, lambda: grid.level_save())
-    button(screen, [150,0,150,top_bar.height], 'SaveAs', font, mouse, lambda: grid.level_save_as())
-    button(screen, [300,0,150,top_bar.height], 'Load', font, mouse, lambda: grid.level_load())
-    button(screen, [450,0,150,top_bar.height], 'New', font, mouse, lambda: grid.level_new())
-    #button(screen, [550,0,150,top_bar.height], 'project', font, mouse, lambda: grid.level_projectselect())
-    drop_menu(screen, [650,0,150,top_bar.height], 'file', font, mouse,
-           lambda: pygame.draw.rect(screen,red,[300,300,100,100]), file_clicked)
-    print(file_clicked)
+    grid.on = True
+    clicky.drop_menu(screen, [0,0,150,top_bar.height], 'file', font, mouse, lambda: file_buttons())
+    
     
     pygame.display.update()
     
@@ -411,12 +421,14 @@ while True:
         else:
             pass
             
-     
+    
     key()
     update()
-
-    # reset one time use keys
     
+    # reset one time use keys
+    # mouse one time perameters
+    if mouse[1] <= top_bar.height:
+        mouse[2] = 0
     keydown.up = False
     keydown.down = False
     keydown.right = False
