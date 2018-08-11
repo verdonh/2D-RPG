@@ -1,0 +1,19 @@
+addons- random use things
+
+button- for all the buttons and drop down menus in the editor
+
+colour- its prety ovious. You should use them more often 
+
+grid- the main grid component thats used to draw on
+
+input- you don't use this in this project
+
+pygame_textinput- a thing i downloaded, hope it does what it says.
+
+
+
+
+
+I'm trying to make a class that can be used for all mouse grid things to select things with a mouse. it would work 
+like the grid class curntly does but it could be changed. in the future I expect you to update the current grid class
+with this. (and make names here less confusing by renaming the current grid class)

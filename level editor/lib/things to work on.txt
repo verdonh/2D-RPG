@@ -1,0 +1,5 @@
+add a type of button that works as a single click. call it one_click
+
+for now the pallet selector is just going to be a scroleing button but in the future I may make it a a grid in the future 
+
+create a grid object for generall use
