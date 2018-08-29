@@ -13,7 +13,7 @@ class grid:
         self.tile = [(255,0,0),False]
         self.edit_x, self.edit_y = 3,3
         self.x, self.y = x, y
-        self.width, self.height = 10, 30
+        self.width, self.height = 10, 10
         self.draw_grid = True
         self.level = []
         for x in range(self.height):
@@ -75,7 +75,6 @@ or input a grid location and it outputs a rect square"
                                     self.cell_width, self.cell_height])        
         if self.draw_grid:
             for x in range(self.height + 1):
-                print(x)
                 self._line((0, x * self.cell_height),
                            (self.width * self.cell_width, x * self.cell_height))
             for y in range(self.width + 1):
@@ -101,7 +100,32 @@ or input a grid location and it outputs a rect square"
         self.level[y][x] = tile
         
     def increse_size(self, side, number):
-        pass
+        if side == 'n':
+            pass
+        if side == 's':
+            self.height += number
+            self.level.append([])
+            for i in range(len(self.level[0])):
+                self.level[len(self.level) - 1].append(0)
+
+
+
+        if side == 'e':
+            self.width += number
+            for i in range(len(self.level)):
+                self.level[i].append(0)
+
+        if side == 'w':
+            pass
+
+    def grid_view(self):
+        if self.draw_grid:
+            self.draw_grid = False
+        else:
+            self.draw_grid = True
+
+
+
 
     def insert(self, index, row_column):
         "row_column takes either 'row' or 'column'"

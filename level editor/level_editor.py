@@ -39,6 +39,7 @@ grid = grid(screen, 0, top_bar.height)
 
 file_clicker = button()
 edit_clicker = button()
+view_clicker = button()
 clicky = button()
 mouse_oneclick = False
 
@@ -52,7 +53,7 @@ def file_buttons():
     grid.on = False
     pygame.draw.rect(screen,black,[0,48,150,250])
     clicky.button(screen, [0,50,150,50], 'New', font, mouse, lambda: grid.level_new())
-    clicky.button(screen, [0,100,150,50], 'Load', font, mouse, lambda: grid.level_load())
+    clicky.button(screen, [0,100,150,50], 'Open', font, mouse, lambda: grid.level_load())
     clicky.button(screen, [0,150,150,50], 'Save', font, mouse, lambda: grid.level_save())
     clicky.button(screen, [0,200,150,50], 'SaveAs', font, mouse, lambda: grid.level_save_as())
     clicky.button(screen, [0,250,150,50], 'project', font, mouse, lambda: grid.level_projectselect())
@@ -61,8 +62,15 @@ def edit_buttons():
 
     grid.on = False
     pygame.draw.rect(screen, black, [150, 48, 150, 100])
-    clicky.button(screen, [150, 50, 150, 50], 'column', font, mouse, lambda: print('hold'))
-    clicky.button(screen, [150, 100, 150, 50], 'row', font, mouse, lambda: print('hold'))
+    clicky.one_click(screen, [150, 50, 150, 50], 'Column', font, mouse, lambda: grid.increse_size('e',1))
+    clicky.one_click(screen, [150, 100, 150, 50], 'Row', font, mouse, lambda: grid.increse_size('s',1))
+
+def view_buttons():
+    grid.on = False
+    pygame.draw.rect(screen, black, [300, 48, 150, 50])
+    clicky.one_click(screen, [300, 50, 150, 50], 'Grid On', font, mouse, lambda: grid.grid_view())
+
+
 
 
 def key():
@@ -101,25 +109,27 @@ def key():
         except:
             print("too far")
     
-def update():
+def update(event):
     
     screen.fill(white)
     grid.update(mouse, pallet.pallet[pallet.pointer])
 
-    pallet.update(mouse)
+    pallet.update(mouse, event)
     pygame.draw.rect(screen, black, [0, 0, width, top_bar.height])
     grid.on = True
     grid_on([pallet.x, pallet.y, pallet.pallet_width, pallet.pallet_height])
     file_clicker.drop_menu(screen, [0,0,150,top_bar.height], 'file', font, mouse, lambda: file_buttons())
     edit_clicker.drop_menu(screen, [150, 0, 150, top_bar.height], 'insert', font, mouse, lambda: edit_buttons())
+    view_clicker.drop_menu(screen, [300, 0, 150, top_bar.height], 'view', font, mouse, lambda: view_buttons())
+
     
     
     pygame.display.update()
     
     
 while True:
-
-    for event in pygame.event.get():
+    events = pygame.event.get()
+    for event in events:
         if event.type == pygame.QUIT:
             pygame.quit()
             
@@ -182,7 +192,7 @@ while True:
             
     
     key()
-    update()
+    update(events)
     
     # reset one time use keys
     # mouse one time perameters
